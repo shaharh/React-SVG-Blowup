@@ -1,0 +1,12 @@
+svg {
+  /*overflow: visible !important;*/
+}
+svg * {
+  transition: all 0.4s;
+  transform-origin: 50% 50% 0px !important;
+  opacity: 0.9;
+}
+svg.active * {
+  opacity: 1;
+  transform: translate(0, 0) scale(1) rotate(0deg) !important;
+}
