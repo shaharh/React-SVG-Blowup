@@ -8,21 +8,20 @@ class SVGElement extends Component {
     super(props);
 
     this.state = {key: 'value'};
-
-    this.generateRandomValue = this.generateRandomValue.bind(this);
   }
 
-  addTransformation(svg, base, callback) {
-    $.each($(svg).find('path, rect, circle'), function () {
-      const xTransform = callback('x', base);
-      const yTransform = callback('y', base);
-      const scaleTransform = callback('scale', .1);
-      const rotateTransform = callback('rot', 360);
+  addTransformation(svg, transform, unit, callback) {
+    $.each($(svg).find('path, rect, circle, polygon'), function () {
+      const xTransform = transform.x ? callback('x', transform.x) : 0;
+      const yTransform = transform.y ? callback('y', transform.y) : 0;
+      const scaleTransform = transform.scale ? callback('scale', transform.scale) : 1;
+      const rotateTransform = transform.rotate ? callback('rotate', transform.rotate) : 0;
       $(this).css('transform',
-        'translate(' + xTransform + 'rem,' + yTransform + 'rem)' +
+        'translate(' + xTransform + unit + ',' + yTransform + unit + ')' +
         'scale(' + scaleTransform + ') ' +
         'rotate(' + rotateTransform + 'deg)');
     });
+    this.addClasses();
   }
 
   // setActive(e){
@@ -32,45 +31,13 @@ class SVGElement extends Component {
   //     $target.css('background-color', color );
   //   });
   // }
-  elementFromTop(elemTrigger, elemTarget, classToAdd, distanceFromTop, unit) {
-    var winY = window.innerHeight || document.documentElement.clientHeight,
-      elTriggerLength = elemTrigger.length,
-      elTargetLength, distTop, distPercent, distPixels, distUnit, elTarget, i, j;
-    for (i = 0; i < elTriggerLength; ++i) {
-      elTarget = document.querySelectorAll('.' + elemTarget);
-      elTargetLength = elTarget.length;
-      distTop = elemTrigger[i].getBoundingClientRect().top;
-      distPercent = Math.round((distTop / winY) * 100);
-      distPixels = Math.round(distTop);
-      distUnit = unit == 'percent' ? distPercent : distPixels;
-      if (distUnit <= distanceFromTop) {
-        if (!hasClass(elemTrigger[i], elemTarget)) {
-          for (j = 0; j < elTargetLength; ++j) {
-            if (!hasClass(elTarget[j], classToAdd)) {
-              addClass(elTarget[j], classToAdd);
-            }
-          }
-        } else {
-          if (!hasClass(elemTrigger[i], classToAdd)) {
-            addClass(elemTrigger[i], classToAdd);
-          }
-        }
-      } else {
-        delClass(elemTrigger[i], classToAdd);
-        if (!hasClass(elemTrigger[i], elemTarget)) {
-          for (j = 0; j < elTargetLength; ++j) {
-            delClass(elTarget[j], classToAdd);
-          }
-        }
-      }
-    }
-  }
 
-  // addClasses() {
+  addClasses() {
+    console.log(this);
   //   $('path, rect, circle').addClass(function(i){
   //     return 'path-'+i;
   //   }.bind(this));
-  // }
+  }
 
   generateRandomValue(type, base) {
     const chosenValue = Math.random() < 0.5;
@@ -80,8 +47,8 @@ class SVGElement extends Component {
       case 'y':
         break;
       case 'scale':
-        return Math.random();
-      case 'rot':
+        return Math.random() * base;
+      case 'rotate':
         break;
     }
     if (chosenValue) {
@@ -100,7 +67,7 @@ class SVGElement extends Component {
       <div>
         <ReactSVG
           path={this.props.svgSrc}
-          callback={svg => this.addTransformation(svg, this.props.base, this.generateRandomValue)}
+          callback={svg => this.addTransformation(svg, this.props.transform, this.props.unit, this.generateRandomValue)}
         />
       </div>
     );

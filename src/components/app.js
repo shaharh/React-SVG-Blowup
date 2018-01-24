@@ -6,9 +6,27 @@ export default class App extends Component {
     return (
       <div>
         <SVGElement
-          delay={300}
-          transform="xTransform, yTransform, scale, rotate"
-          base={15}
+          trigger={''}
+          active-class="active"
+          transform={{
+            x: 5,
+            y: 5,
+            scale: 1.2,
+            rotate: 180
+          }}
+          unit="rem"
+          svgSrc="../../style/SVG/computers.svg"
+        />
+        <SVGElement
+          trigger={''}
+          active-class="active"
+          transform={{
+            x: 5,
+            y: 5,
+            scale: 1.2,
+            rotate: 180
+          }}
+          unit="rem"
           svgSrc="../../style/SVG/computers.svg"
         />
       </div>
